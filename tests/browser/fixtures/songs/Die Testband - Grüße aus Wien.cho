@@ -1,0 +1,55 @@
+{title: Grüße aus Wien}
+{artist: Die Testband}
+{x_instrument: guitar}
+# Invented test song (Dissonance browser tests) – free to use
+
+{comment: * = einmal anschlagen}
+
+{start_of_verse: Strophe 1}
+Am [Em]Morgen geht die Sonne auf, der [D]Tag fängt langsam an.
+Ich [G]trink den ersten [B]Kaffee aus.
+[Em]Die Straßenbahn fährt [D]um die Ecke, [G]bimmelt laut [B]vorbei,
+Ein [Em]Hund bellt [D]und ein Vogel singt
+Ich [G]geh hinaus und [B]bin dabei.
+Und [Em]wenn es regnet, [D]macht das nichts,
+[G]wir haben ja den [B]Schirm dabei.
+{end_of_verse}
+
+{start_of_verse: Pre-Chorus}
+Dann [C]rufen alle laut im Chor, so [*N.C.]laut es nur geht,
+[B]Ob man das wohl [*N.C.]auch dort drüben versteht?
+{end_of_verse}
+
+{start_of_chorus: Refrain}
+Grü[Em]ße aus [B]Wien, wir sind [C]alle [G]da
+[Em]Grüße aus [B]Wien, und das [C]Wetter ist [G]klar
+[Em]Singen und [B]lachen am [C]Donau[G]strand
+[Em]Grüße aus [B]Wien in das [C]ganze [G]Land.
+{end_of_chorus}
+
+{start_of_verse: Strophe 2}
+Am [Em]Abend wird es leise hier, die [D]Lichter gehen an.
+Wir [G]sitzen noch ein [B]bisschen da.
+[Em]Die Gitarre geht im [D]Kreis herum, [G]jeder spielt ein [B]Lied,
+Und [Em]wer nicht spielt, [D]der singt halt mit
+So [G]wie es jeden [B]Abend geschieht.
+Und [Em]wenn wir müde [D]sind, dann gehts
+[G]langsam heim, die [B]Nacht ist da.
+{end_of_verse}
+
+{start_of_chorus: Refrain}
+Grü[Em]ße aus [B]Wien, wir sind [C]alle [G]da
+[Em]Grüße aus [B]Wien, und das [C]Wetter ist [G]klar
+[Em]Singen und [B]lachen am [C]Donau[G]strand
+[Em]Grüße aus [B]Wien in das [C]ganze [G]Land.
+{end_of_chorus}
+
+{start_of_bridge: Bridge}
+[C]Und wenn wir einmal [D]weiter ziehn
+[Em]bleibt doch ein Stück von [B]uns hier in Wien.
+{end_of_bridge}
+
+{start_of_chorus: Refrain}
+Grü[Em]ße aus [B]Wien, wir sind [C]alle [G]da
+[Em]Grüße aus [B]Wien, und das [C]Wetter ist [G]klar
+{end_of_chorus}

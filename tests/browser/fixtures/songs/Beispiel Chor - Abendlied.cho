@@ -1,0 +1,35 @@
+{title: Abendlied}
+{artist: Beispiel Chor}
+{key: C#m}
+{x_instrument: guitar}
+# Invented test song (Dissonance browser tests) – free to use
+
+{start_of_verse: Intro}
+[C#m] [E] [B] [F#]
+{end_of_verse}
+
+{start_of_verse: Strophe 1}
+[C#m]Der Mond steht hoch, die [E]Stadt wird still
+[B]Ich weiß nicht recht, was [F#]ich noch will
+[C#m]Die Fenster gehn nach[E]einander aus
+[B]Und ich such mir den [F#]Weg nach Haus
+{end_of_verse}
+
+{start_of_chorus: Refrain}
+[A]Lalala, la[E]lalala
+[B]Lalala, la[C#m]lala
+[A]Lalala, la[E]lalala
+[B]Lalala, la[C#m]la
+{end_of_chorus}
+
+{start_of_verse: Strophe 2}
+[C#m]Ein Auto fährt, ein [E]Hund schläft ein
+[B]Und irgendwo ist [F#]noch wer allein
+[C#m]Ich zähl die Sterne, [E]eins, zwei, drei
+[B]Und schon ist wieder [F#]ein Tag vorbei
+{end_of_verse}
+
+{start_of_chorus: Refrain}
+[A]Lalala, la[E]lalala
+[B]Lalala, la[C#m]lala
+{end_of_chorus}

@@ -1,0 +1,27 @@
+# Dissonance – example setup. Copy this file, adjust the marked values, then: docker compose up -d --build
+services:
+  dissonance:
+    build: .
+    container_name: dissonance
+    restart: unless-stopped
+    read_only: true            # the app only writes into /songs
+    cap_drop: [ALL]
+    ports:
+      - "8080:8080"            # behind a reverse proxy with HTTPS: remove this and use the proxy's network instead
+    environment:
+      - TZ=Europe/Berlin
+      # Address users open (needed for the login; also used for secure cookies):
+      # - PUBLIC_URL=https://songs.example.com
+      # - TRUSTED_PROXY=*        # behind a reverse proxy that is the only way in: log the real client address
+      # - REQUIRE_DB=on          # after the first start: never create a new database (protects against an unmounted songs folder)
+      # - GUEST_ACCESS=off       # with login, on the internet: people who are not signed in see only the sign-in page
+      # Login via an OpenID Connect provider (optional – without it nobody needs to log in and everybody may edit).
+      # All options: README → Configuration.
+      # - OIDC_ISSUER=https://auth.example.com/realms/example
+      # - OIDC_CLIENT_ID=dissonance
+      # - OIDC_CLIENT_SECRET_PATH=/run/secrets/oidc
+      # - OIDC_ADMIN_GROUPS=admin
+      # - OIDC_PROVIDER_NAME=Example Login
+    volumes:
+      - ./songs:/songs         # your songs (.cho files) + history/songbook database; back this up
+      # - ./oidc-secret:/run/secrets/oidc:ro   # file containing only the client secret

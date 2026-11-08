@@ -1,0 +1,10 @@
+# saved song pages: other people's lyrics/tabs – keep local
+examples/
+__pycache__/
+*.pyc
+# runtime data (only if SONG_DIR points here)
+*.db
+*.cho
+.papierkorb/
+# invented test songs belong in the repo
+!tests/browser/fixtures/**/*.cho
