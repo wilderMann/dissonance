@@ -1,0 +1,82 @@
+# Release: push a tag "vX.Y.Z" (must match the VERSION file) ->
+#   1. unit tests (Waitress and the built-in server)
+#   2. Docker image for amd64 + arm64 -> ghcr.io/<owner>/dissonance:X.Y.Z, X.Y, X and latest
+#   3. GitHub release with the matching section of CHANGELOG.md
+# Actions are pinned to commit hashes (version in the comment).
+name: Release
+
+on:
+  push:
+    tags: ["v*.*.*"]
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0  # v7.1.0
+        with:
+          python-version: "3.13"
+      - name: Tag matches VERSION
+        run: |
+          test "v$(cat VERSION)" = "$GITHUB_REF_NAME" || { echo "tag $GITHUB_REF_NAME != v$(cat VERSION)"; exit 1; }
+      - run: "pip install --no-deps --only-binary=:all: --require-hashes -r requirements.txt"
+      - run: python -m unittest test_ug2chordpro
+      - run: TEST_SERVER=builtin python -m unittest test_ug2chordpro
+
+  image:
+    needs: test
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
+      - uses: docker/setup-qemu-action@99012661954931238ded8c8b007157a8430204e1  # v4.4.0
+      - uses: docker/setup-buildx-action@f87e5991a6d7451dcb8d9637bfbc97413f497069  # v4.4.1
+      - uses: docker/login-action@8aa5831fb8d48d8f76594c7ddde61ae58019f550  # v4.8.0
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - id: meta
+        uses: docker/metadata-action@dc802804100637a589fabce1cb79ff13a1411302  # v6.2.0
+        with:
+          images: ghcr.io/${{ github.repository }}
+          tags: |
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=semver,pattern={{major}}
+          labels: |
+            org.opencontainers.image.title=Dissonance
+            org.opencontainers.image.description=Self-hosted online songbook: ChordPro songs, auto-scroll, songbooks, booklet printing
+            org.opencontainers.image.licenses=GPL-3.0-only
+      - uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc  # v7.4.0
+        with:
+          context: .
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+  release:
+    needs: image
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
+      - name: Release notes from CHANGELOG.md
+        run: |
+          v="${GITHUB_REF_NAME#v}"
+          awk -v v="$v" '/^## /{p = index($0, "[" v "]") > 0; next} p' CHANGELOG.md > notes.md
+          test -s notes.md || { echo "no CHANGELOG.md section for $v"; exit 1; }
+          printf '\n**Docker image:** `ghcr.io/%s:%s`\n' "${GITHUB_REPOSITORY,,}" "$v" >> notes.md
+      - env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release create "$GITHUB_REF_NAME" --title "Dissonance $GITHUB_REF_NAME" --notes-file notes.md --verify-tag

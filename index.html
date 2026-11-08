@@ -567,6 +567,7 @@ body.fullsheet main { max-width:none; }
       <p class="hint">Diese Einstellungen gelten nur für diesen Browser. Gespeicherte Tempos und Tonarten pro Lied bleiben davon unberührt.</p>
       <div class="row"><button class="ib" id="set-clear" style="white-space:normal;text-align:left">Offline gespeicherte Lieder auf diesem Gerät löschen</button></div>
     </div>
+    <p class="hint" id="set-version" style="text-align:center"></p>
   </section>
 
   <!-- admin: users -->
@@ -1527,7 +1528,7 @@ async function loadMe() {
   const r = await api("GET", "api/me").catch(() => null);
   if (r && r.ok) {
     me = { auth: r.auth, user: r.user, provider: r.provider || "", account: r.account_url || "", notation: r.notation || null,
-           notation_default: r.notation_default || "intl", guest_access: r.guest_access !== false, campfire: r.campfire || [] };
+           notation_default: r.notation_default || "intl", version: r.version || "", guest_access: r.guest_access !== false, campfire: r.campfire || [] };
     store.set("me", me); mergeGuestFavs();
   }
   drawMe(); applyNotation();
@@ -3197,6 +3198,8 @@ function showSettings() {
   $("#set-speed").value = store.get("speed", 10);
   $("#set-chords").checked = showChords;
   $("#set-ws").checked = showWs;
+  $("#set-version").replaceChildren(Object.assign(el("a", "", "Dissonance " + (me.version || "")),
+    { href: "https://github.com/wilderMann/dissonance", target: "_blank", rel: "noopener" }));
 }
 const NOTATION_NAME = { intl: $t("international (B, B♭)"), german: $t("deutsch (H, B = B♭)") };
 function drawNotationSetting() {

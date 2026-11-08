@@ -25,6 +25,10 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
+try:  # release version (the VERSION file; git tags are "v" + this)
+    VERSION = (HERE / "VERSION").read_text(encoding="utf-8").strip()
+except OSError:
+    VERSION = "dev"
 sys.path.insert(0, str(HERE))
 import ug2chordpro as ug  # noqa: E402
 import auth  # noqa: E402
@@ -1272,7 +1276,7 @@ def me_info(u):
     with tx() as c:
         own = c.execute("SELECT notation FROM users WHERE sub=?", (u["sub"],)).fetchone() if u and u["sub"] else None
         info = {"notation": own[0] if own else None, "notation_default": notation_default(c),
-                "guest_access": GUEST_ACCESS or OIDC is None}
+                "guest_access": GUEST_ACCESS or OIDC is None, "version": VERSION}
     return info | {"campfire": campfire_list()}  # own transaction (tx() is not re-entrant)
 
 
@@ -1561,7 +1565,10 @@ class Request:
         path = split.path
         if method == "GET" and path in STATIC:
             f, ctype = STATIC[path]
-            return self.send(200, (HERE / f).read_bytes(), ctype)
+            body = (HERE / f).read_bytes()
+            if f == "sw.js":  # cache name per release: a new version replaces the old offline copy
+                body = body.replace(b"__VERSION__", VERSION.encode())
+            return self.send(200, body, ctype)
         if method == "GET" and path == "/healthz":
             return self.send(*healthz())
         if method == "GET" and path == "/robots.txt":

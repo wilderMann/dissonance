@@ -1,5 +1,5 @@
 // Dissonance service worker: network first (short timeout), cache as fallback -> songs opened once work offline.
-const CACHE = "dissonance-v18";
+const CACHE = "dissonance-__VERSION__";  // the server fills in the release version (VERSION file)
 const SHELL = ["./", "manifest.webmanifest", "icon.svg", "icon-192.png", "icon-512.png", "icon-maskable-512.png", "nosleep.mp4", "nosleep.webm", "chords.json"];
 
 self.addEventListener("install", e => {

@@ -1,7 +1,9 @@
-# Dissonance – example setup. Copy this file, adjust the marked values, then: docker compose up -d --build
+# Dissonance – example setup. Copy this file, adjust the marked values, then: docker compose up -d
+# Update: docker compose pull && docker compose up -d
 services:
   dissonance:
-    build: .
+    image: ghcr.io/wildermann/dissonance:1   # 1 = newest 1.x release; pin e.g. 1.0.0 for full control
+    # build: .                              # or build it yourself from this repository instead
     container_name: dissonance
     restart: unless-stopped
     read_only: true            # the app only writes into /songs

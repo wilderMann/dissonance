@@ -147,15 +147,21 @@ everybody who can reach the app may edit – fine for your own computer or a tru
 
 ### Docker / Podman
 
+Ready-made images for amd64 and arm64 (Raspberry Pi 4/5) are published at
+`ghcr.io/wildermann/dissonance`. Get the example [`docker-compose.yml`](docker-compose.yml) and start it:
+
 ```bash
-git clone https://github.com/wilderMann/dissonance.git && cd dissonance
-mkdir songs
-docker compose up -d --build
+mkdir dissonance && cd dissonance && mkdir songs
+curl -O https://raw.githubusercontent.com/wilderMann/dissonance/main/docker-compose.yml
+docker compose up -d
 ```
 
-The provided [`docker-compose.yml`](docker-compose.yml) builds the image from the [`Dockerfile`](Dockerfile)
-(Alpine + Python), runs it read-only and without capabilities as an unprivileged user, and stores everything in
-`./songs`. The container listens on port 8080 and has a health check at `/healthz`.
+It runs the image read-only and without capabilities as an unprivileged user and stores everything in `./songs`.
+The container listens on port 8080 and has a health check at `/healthz`.
+
+Image tags: `1.0.0` (exactly this release), `1.0` (bug fixes only), `1` (all 1.x releases – recommended) and `latest`.
+A new major version (`2`) may need changes to your setup; read its notes in the [changelog](CHANGELOG.md) first.
+To build the image yourself instead, clone the repository and replace `image:` with `build: .` in the compose file.
 
 The songs folder must be writable by the container user (uid 1000 in the image), e.g. `sudo chown 1000 songs`.
 Existing `.cho` files you copy into the folder are picked up automatically.
@@ -377,7 +383,7 @@ Everything lives in `SONG_DIR`:
 Back up the whole folder. Losing the database loses history, songbooks and users, never the songs. Files added,
 changed or removed outside the app (e.g. over a network share) are picked up and recorded in the history.
 
-**Updating**: replace the code (or rebuild the image) and restart. The database is upgraded automatically on the first
+**Updating**: `docker compose pull && docker compose up -d` (without Docker: replace the code and restart). The database is upgraded automatically on the first
 start; back up the folder before you update. The browser loads the new interface on the next visit (installed apps:
 close and reopen once).
 
@@ -404,6 +410,8 @@ close and reopen once).
 ```
 app.py            API (songs, history, songbooks, users); WSGI app for Waitress + built-in fallback server
 requirements.txt  Waitress, pinned with its hash
+VERSION           the release version (tags are v + this); CHANGELOG.md – what changed per release
+.github/          release workflow: tests, Docker image to ghcr.io, GitHub release
 auth.py           OpenID Connect login
 i18n.py           server messages in English and German
 ug2chordpro.py    converter: Ultimate Guitar, Ukulele-Tabs.com, chords-over-lyrics text → ChordPro
@@ -432,6 +440,11 @@ is needed) and cover play mode, songbooks, history, printing and the booklet (PD
 PWA/keep-awake, offline use, languages, login, roles, sharing, campfire mode, collaboration, bulk edit and the
 single-user mode, at phone, tablet and desktop widths (list in `tests/browser/run.py`). Screenshots and PDFs go to `tests/browser/out/`. Some converter tests need saved pages from
 the supported sites in `examples/`; they are not part of the repository and those tests are skipped without them.
+
+**Releases**: set the new version in `VERSION`, add a section to `CHANGELOG.md`, commit, then tag and push
+(`git tag v1.2.3 && git push origin v1.2.3`). The release workflow checks that tag and `VERSION` match, runs the unit
+tests, publishes the image for amd64 and arm64 to `ghcr.io` and creates the GitHub release with the changelog section.
+The version is shown in the settings and names the offline cache, so browsers pick up a new release by themselves.
 
 **Contributing**: issues and pull requests are welcome. Please keep it dependency-free (standard library + Waitress, no
 build step), add the English text for every new German one, and run the unit and browser tests.

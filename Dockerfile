@@ -10,7 +10,7 @@ WORKDIR /app
 COPY requirements.txt ./
 RUN pip install --no-cache-dir --no-deps --only-binary=:all: --require-hashes -r requirements.txt \
  && rm requirements.txt
-COPY app.py auth.py i18n.py ug2chordpro.py index.html sw.js manifest.webmanifest \
+COPY VERSION app.py auth.py i18n.py ug2chordpro.py index.html sw.js manifest.webmanifest \
      icon.svg icon-192.png icon-512.png icon-maskable-512.png apple-touch-icon.png nosleep.mp4 nosleep.webm chords.json ./
 
 ENV PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1 SONG_DIR=/songs PORT=8080

@@ -391,6 +391,13 @@ class Server(unittest.TestCase):
             with urllib.request.urlopen(self.base + p) as r:
                 self.assertEqual(r.status, 200, p)
 
+    def test_version(self):
+        version = open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "VERSION")).read().strip()
+        self.assertRegex(version, r"^\d+\.\d+\.\d+$")
+        with urllib.request.urlopen(self.base + "/sw.js") as r:
+            self.assertIn(f'"dissonance-{version}"', r.read().decode())  # offline cache per release
+        self.assertEqual(self.call("GET", "/api/me")[1]["version"], version)
+
     def test_songbook(self):
         song = "{title: Über den Wolken}\n{artist: Reinhard Mey}\n{key: G}\n\n[G]Wind Nord-Ost\n"
         st, r = self.call("POST", "/api/songs", {"content": song})
@@ -724,7 +731,7 @@ class Users(unittest.TestCase):
         self.assertEqual(self.call(alice, "GET", "/api/me")[1]["user"], {"name": "Alice", "username": "alice", "admin": False})
         self.assertTrue(self.call(admin, "GET", "/api/me")[1]["user"]["admin"])
         self.assertEqual(self.call(guest, "GET", "/api/me")[1], {"ok": True, "auth": True, "user": None, "provider": "", "account_url": "",
-                                                              "notation": None, "notation_default": "intl", "guest_access": True,
+                                                              "notation": None, "notation_default": "intl", "guest_access": True, "version": self.app.VERSION,
                                                               "campfire": []})
         # guests can't change anything
         self.assertEqual(self.call(guest, "POST", "/api/songs", {"content": "{title: G}\n"})[0], 401)
