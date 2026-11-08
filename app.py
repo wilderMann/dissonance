@@ -404,7 +404,7 @@ def check_manage(u, c, table, rid):
 
 
 def owner_nick(c, owner):
-    """Username (nick, e.g. "andi") of a user – never the full name."""
+    """Username (nick, e.g. "anna") of a user – never the full name."""
     row = c.execute("SELECT username FROM users WHERE sub=?", (owner,)).fetchone()
     return row[0] if row and row[0] else ""
 

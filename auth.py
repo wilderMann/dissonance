@@ -1,7 +1,7 @@
 """OpenID Connect login (authorization code flow + PKCE), stdlib only – works with any OIDC provider
 (Keycloak, Authentik, Authelia, Zitadel, Kanidm, Pocket ID, Google, Entra ID …).
 
-Configuration comes from environment variables (see Config.from_env / README), modelled on Headscale's `oidc:` block.
+Configuration comes from environment variables (see Config.from_env / docs/users-and-login.md).
 The ID token comes straight from the token endpoint over TLS, so – as OIDC Core 3.1.3.7 allows – its issuer is
 trusted via the TLS connection instead of verifying the signature; iss, aud/azp, exp and nonce are still checked.
 """
@@ -213,7 +213,7 @@ class OIDC:
         return user, id_token, return_to
 
     def check_allowed(self, u):
-        """Like Headscale's allowed_groups / allowed_domains / allowed_users: all set lists must match."""
+        """allowed_groups / allowed_domains / allowed_users: all lists that are set must match."""
         cfg = self.cfg
         if cfg.allowed_groups and not _in(u["groups"], cfg.allowed_groups):
             raise AuthError("Dein Konto ist für diese App nicht freigeschaltet (Gruppe fehlt).")
